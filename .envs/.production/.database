@@ -1,0 +1,8 @@
+# Oracle
+# ------------------------------------------------------------------------------
+ENGINE=django.db.backends.oracle
+HOST=10.32.254.32
+PORT=5432
+DB=ereturns_prd
+USER=ereturns_prd
+PASSWORD=Epassw0rdPrd
