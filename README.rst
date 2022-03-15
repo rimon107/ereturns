@@ -14,7 +14,7 @@ Installing package using the following command:
 
 ::
 
-  $ docker-compose -f file.yml run --rm django pip install package_name
+  $ pip install package_name
 
 Running Commands Using Docker
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
