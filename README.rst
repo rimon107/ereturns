@@ -23,35 +23,22 @@ command:
 
 ::
 
-  $ docker-compose -f local.yml run --rm django python manage.py command
-  $ docker-compose -f local.yml up --build
-  $ docker-compose -f local.yml run --rm django python manage.py makemigrations
-  $ docker-compose -f local.yml run --rm django python manage.py migrate
-  $ docker-compose -f local.yml exec django /bin/bash
-  $ docker-compose -f local.yml exec postgres /bin/bash
-  $ docker-compose -f local.yml exec postgres backups
-  $ docker cp $(docker-compose -f local.yml ps -q postgres):/backups ./backups
-  $ docker-compose -f local.yml exec postgres restore backup_2018_03_13T09_05_07.sql.gz
+  $ python manage.py runserver 0.0.0.0:8000
 
 Deployment
 ----------
 
 The following details how to deploy this application.
 
-Docker
+Deploy
 ^^^^^^
 
 For local development:
 
 ::
 
-  $ docker-compose -f local.yml up --build
+  $ command
 
-For production:
-
-::
-
-  $ docker-compose -f production.yml up --build
 
 
 Setting Up Your Users
