@@ -21,7 +21,6 @@ class UserAdmin(auth_admin.UserAdmin):
             {
                 "fields": (
                     "user_code",
-                    # "report_type",
                     "financial_institute_type",
                     "financial_institute",
                     "branch",
