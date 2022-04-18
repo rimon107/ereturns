@@ -27,17 +27,24 @@ class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, DestroyM
         return self.queryset.filter(id=self.request.user.id)
 
     def list(self, request, *args, **kwargs):
-        group = self.request.user.groups.all()[0]
+        groups = self.request.user.groups.all()
+        group = None
+        if groups.count() > 0:
+            group = groups[0]
+        else:
+            data = {
+                "group_error": ["User does not belongs to any group."]
+            }
+            return Response(status=status.HTTP_400_BAD_REQUEST, data=data)
+        fi_id = self.request.user.financial_institute_id
         if group.name == GroupNames.bb_admin:
             list_queryset = self.queryset
-        elif group.name == GroupNames.bank_ho_admin:
-            list_queryset = self.queryset.filter(
-                financial_institute_id=self.request.user.financial_institute_id)
+        if group.name == GroupNames.bank_ho_admin:
+            list_queryset = self.queryset.filter(financial_institute_id=fi_id)
             is_active = self.request.GET.get("is_active", None)
             if is_active:
-                list_queryset = self.queryset.filter(is_active=is_active)
+                list_queryset = list_queryset.filter(is_active=is_active)
         else:
-            fi_id = self.request.user.financial_institute.id
             list_queryset = self.queryset.filter(
                 groups__id=group.id, financial_institute__id=fi_id)
         queryset = self.filter_queryset(list_queryset)
@@ -101,7 +108,7 @@ class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, DestroyM
         user = self.request.user
         group = user.groups.all()[0]
         if group.name == GroupNames.bank_ho_admin:
-            pending = User.objects.filter(financial_institute_id=user.financial_institute_id, is_active=False)
+            pending = User.objects.filter(financial_institute_id=user.financial_institute_id, is_active=False).values()
             data = {
                 "pending": pending
             }
@@ -203,7 +210,6 @@ class UserRegistrationViewSet(GenericViewSet):
                                          branch__fi_branch_id=branch).count()
         return count
 
-
     @action(detail=False, methods=["POST"], url_path="add")
     def register_user(self, request, *args, **kwargs):
         report_type = request.data.get("report_type")
@@ -223,7 +229,7 @@ class UserRegistrationViewSet(GenericViewSet):
         branch = None
         branch_id = None
         if group_name == GroupNames.bank_branch_end_user:
-            branch_id = int(request.data.get("branch_id"))
+            branch_id = int(request.data.get("branch_id", 0))
             count = self.get_user_count(fi_id, branch_id)
             if count > 2:
                 data = {
@@ -238,7 +244,7 @@ class UserRegistrationViewSet(GenericViewSet):
                 }
                 return Response(status=status.HTTP_400_BAD_REQUEST, data=data)
         elif group_name == GroupNames.bank_ho_end_user:
-            branch = Branch.objects.filter(fi_id=fi_id, branch_nm__iexact="Head Office")
+            branch = Branch.objects.filter(fi_id=fi_id, branch_nm__icontains="Head Office")
             count = self.get_user_count(fi_id, branch_id)
             if count > 5:
                 data = {

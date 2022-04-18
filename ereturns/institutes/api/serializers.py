@@ -33,14 +33,15 @@ class BaseBranchSerializer(serializers.ModelSerializer):
 class BranchSerializer(serializers.ModelSerializer):
     financial_institute = FinancialInstituteSerializer(many=False, read_only=True)
 
-
     class Meta:
         model = Branch
         fields = ["fi_branch_id", "branch_nm", "fi_id", "financial_institute_type", "geo_area"]
 
 
 class DepartmentSerializer(serializers.ModelSerializer):
+    label = serializers.CharField(source='name', read_only=True)
+    value = serializers.CharField(source='id', read_only=True)
 
     class Meta:
         model = Department
-        fields = ["id", "code", "name"]
+        fields = ["label", "value"]

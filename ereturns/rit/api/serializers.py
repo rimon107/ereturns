@@ -68,13 +68,13 @@ class RitSupervisionReadSerializer(serializers.ModelSerializer):
         return f"{obj.financial_institute_type.name}({obj.financial_institute_type.code})"
 
     def get_financial_institute(self, obj):
-        return f"{obj.financial_institute.name}({obj.financial_institute.code})"
+        return f"{obj.financial_institute.fi_nm}({obj.financial_institute.fi_id})"
 
     def get_branch(self, obj):
-        return f"{obj.branch.name}({obj.branch.code})"
+        return f"{obj.branch.branch_nm}({obj.branch.fi_branch_id})"
 
     def get_department(self, obj):
-        return f"{obj.department.name}({obj.department.code})"
+        return f"{obj.department}"
 
     def get_uploaded_by(self, obj):
         return f"{obj.uploaded_by.name}"

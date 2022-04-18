@@ -46,11 +46,11 @@ class UserSerializer(serializers.ModelSerializer):
             branch = request_data.get("branch_id")
         else:
             fi_id = request_data.get("financial_institute_id")
-            branch = Branch.objects.filter(fi_id=fi_id, branch_nm__iexact="Head Office")
+            branch = Branch.objects.filter(fi_id=fi_id, branch_nm__icontains="Head Office")
             if branch.exists():
                 branch = branch.first().fi_branch_id
             else:
-                raise serializers.ValidationError({'branch_not_exists': ("The branch does not exists.")})
+                raise serializers.ValidationError({'branch_not_exists': ["The branch does not exists."]})
         validated_data["branch_id"] = branch
 
         instance = User.objects.create(**validated_data)

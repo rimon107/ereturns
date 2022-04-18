@@ -4,7 +4,7 @@ from ereturns.rit.models.models import (
     RitSupervision,
     RitManagement,
     RitCurrencyValidation,
-    RitCoaValidation
+    RitCoaValidation, RitLoadStatus
 )
 
 
@@ -45,5 +45,21 @@ class RitCoaValidationAdmin(admin.ModelAdmin):
 
 @admin.register(RitSupervision)
 class RitSupervisionAdmin(admin.ModelAdmin):
-    search_fields = ["rit"]
-    autocomplete_fields = ('rit', )
+    search_fields = ["rit", "financial_institute"]
+    autocomplete_fields = ('rit',)
+    list_display = ["rit", "financial_institute", "branch", "base_date", "upload_time"]
+
+
+@admin.register(RitLoadStatus)
+class RitLoadStatusAdmin(admin.ModelAdmin):
+    search_fields = ["rit_name", "fi", "branch", "status", "msg", "count", "load_date"]
+    list_display = ["rit_name", "fi", "branch", "status", "msg", "count", "load_date"]
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
